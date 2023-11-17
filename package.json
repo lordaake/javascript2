@@ -1,0 +1,49 @@
+{
+  "name": "css-frameworks-ca",
+  "version": "0.0.1",
+  "description": "A starting point for the CSS Frameworks CA project",
+  "scripts": {
+    "build": "if-env NETLIFY=true && npm run build:netlify || npm run build:local",
+    "build:netlify": "npm run sass && webpack --mode production && npm run copy",
+    "build:local": "npm run sass && webpack --mode development",
+    "copy": "shx mkdir -p build && shx cp -r src dist src profile images feed index.html build/",
+    "sass": "sass src/scss:dist/css",
+    "watch": "sass --watch src/scss:dist/css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoroffFEU/css-frameworks-ca.git"
+  },
+  "keywords": [
+    "CSS",
+    "Frameworks",
+    "Bootstrap",
+    "SCSS",
+    "SASS"
+  ],
+  "author": "Tord Aake Larsson <lordaake@protonmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NoroffFEU/css-frameworks-ca/issues"
+  },
+  "homepage": "https://github.com/NoroffFEU/css-frameworks-ca#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "core-js": "^3.33.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "babel-loader": "^9.1.3",
+    "cross-env": "^7.0.3",
+    "if-env": "^1.0.4",
+    "sass": "^1.69.5",
+    "shx": "^0.3.4",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "engines": {
+    "node": ">=18.18.2",
+    "npm": ">=10.1.0"
+  }
+}

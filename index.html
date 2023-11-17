@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed Page</title>
+    <link rel="stylesheet" href="../dist/css/index.css">
+    <script src="./dist/js/bundle.js"></script>
+    <script src="/src/js/registration.js"></script>
+</head>
+
+<body class="bg-secondary">
+    <header class="mb-4">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav text-center">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="../index.html">Log in</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="../feed/index.html">Feed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="../profile/index.html">Profile</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pb-4">
+        <section class="container authentication-form">
+            <div class="wrapper">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div id="login-container" class="mt-5">
+                                <form id="loginForm" action="javascript:void(0)" method="post">
+                                    <h2 class="text-center mb-3">Login</h2>
+                                    <div class="mb-3">
+                                        <label for="loginEmail" class="form-label">Email:</label>
+                                        <input type="text" class="form-control" id="loginEmail" name="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="loginPassword" class="form-label">Password:</label>
+                                        <input type="password" class="form-control" id="loginPassword" name="password"
+                                            required minlength="8">
+                                    </div>
+                                    <div class="text-center mb-3">
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                    </div>
+                                    <p class="text-center">Don't have an account? <a href="#"
+                                            id="register-here">Register
+                                            here</a></p>
+                                </form>
+                            </div>
+                            <div id="registration-container" style="display: none">
+                                <form id="registrationForm" action="javascript:void(0)" method="post"
+                                    class="mt-5 col-md-6 offset-md-3">
+                                    <h2 class="text-center mb-3">Register</h2>
+                                    <div class="mb-3">
+                                        <label for="registerUsername" class="form-label">Username:</label>
+                                        <input type="text" class="form-control" id="registerUsername" name="username"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerEmail" class="form-label">Email:</label>
+                                        <input type="email" class="form-control" id="registerEmail" name="email"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerPassword" class="form-label">Password:</label>
+                                        <input type="password" class="form-control" id="registerPassword"
+                                            name="password" required minlength="8">
+                                    </div>
+                                    <!--
+                                    <div class="mb-3">
+                                        <label for="registerAvatar" class="form-label">Avatar (Optional):</label>
+                                        <input type="file" class="form-control-file" id="registerAvatar" name="avatar">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerBanner" class="form-label">Banner (Optional):</label>
+                                        <input type="file" class="form-control-file" id="registerBanner" name="banner">
+                                    </div>
+                                    <div class="text-center">-->
+
+                                    <button type="submit" class="btn btn-primary">Register</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="modal fade" id="passwordLengthErrorModal" tabindex="-1" role="dialog"
+                aria-labelledby="passwordLengthErrorModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="passwordLengthErrorModalLabel">Error</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Password must have a minimum length of 8 characters.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-3">
+        &copy; 2023 Tord Åke Larsson. All rights reserved.
+    </footer>
+</body>
+
+</html>
