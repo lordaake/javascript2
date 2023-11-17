@@ -7,18 +7,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const API_BASE_URL = "https://api.noroff.dev/api/v1/social/auth/register";
 
-        const username = document.getElementById("registerUsername").value;
-        const email = document.getElementById("registerEmail").value;
-        const password = document.getElementById("registerPassword").value;
+        const username = document.getElementById("registerUsername");
+        const email = document.getElementById("registerEmail");
+        const password = document.getElementById("registerPassword");
 
         /** 
         const avatar = document.getElementById("registerAvatar").value;
         const banner = document.getElementById("registerBanner").value; */
 
         const registrationData = {
-            name: username,
-            email: email,
-            password: password
+            name: username.value,
+            email: email.value,
+            password: password.value
         };
 
         fetch(API_BASE_URL, {
@@ -34,11 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 return response.json();
             })
-            .then((data) => {
-                console.log("Registration successful:", data);
+            .then(() => {
+                username.value = "";
+                email.value = "";
+                password.value = "";
+                alert("Registration successful!");
             })
             .catch((error) => {
-                console.error("Registration error:", error);
+                alert("Registration failed. Please check your inputs.");
             });
     });
 
@@ -75,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Login successful. Access token:", accessToken);
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("username", data.name);
+                localStorage.setItem("isLoggedIn", "true");
                 window.location.href = "./profile/index.html";
             })
             .catch((error) => {
