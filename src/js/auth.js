@@ -1,5 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+
+    const registrationContainer = document.getElementById("registration-container");
+    const registerHereLink = document.getElementById("register-here");
+
+    function toggleRegistrationForm() {
+        if (registrationContainer.style.display === "none" || registrationContainer.style.display === "") {
+            registrationContainer.style.display = "flex";
+        } else {
+            registrationContainer.style.display = "none";
+        }
+    }
+
+    registerHereLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        toggleRegistrationForm();
+    });
+
+
     const registrationForm = document.getElementById("registrationForm");
 
     registrationForm.addEventListener("submit", function (e) {
@@ -10,17 +28,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const username = document.getElementById("registerUsername");
         const email = document.getElementById("registerEmail");
         const password = document.getElementById("registerPassword");
-
-        /** 
-        const avatar = document.getElementById("registerAvatar").value;
-        const banner = document.getElementById("registerBanner").value; */
+        const avatar = document.getElementById("registerAvatar")
+        const banner = document.getElementById("registerBanner")
 
         const registrationData = {
             name: username.value,
             email: email.value,
-            password: password.value
+            banner: banner.value,
+            avatar: avatar.value,
+            password: password.value,
         };
 
+        console.log("Registration Data:", registrationData);
         fetch(API_BASE_URL, {
             method: "POST",
             headers: {
@@ -38,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 username.value = "";
                 email.value = "";
                 password.value = "";
+                avatar.value = "";
+                banner.value = "";
                 alert("Registration successful!");
             })
             .catch((error) => {
@@ -52,12 +73,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const API_LOGIN_URL = "https://api.noroff.dev/api/v1/social/auth/login";
 
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
+        const email = document.getElementById("loginEmail");
+        const password = document.getElementById("loginPassword");
 
         const loginData = {
-            email: email,
-            password: password,
+            email: email.value,
+            password: password.value,
         };
 
         fetch(API_LOGIN_URL, {
@@ -75,9 +96,10 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then((data) => {
                 const accessToken = data.accessToken;
-                console.log("Login successful. Access token:", accessToken);
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("username", data.name);
+                localStorage.setItem("avatar", data.avatar);
+                localStorage.setItem("banner", data.banner);
                 localStorage.setItem("isLoggedIn", "true");
                 window.location.href = "./profile/index.html";
             })

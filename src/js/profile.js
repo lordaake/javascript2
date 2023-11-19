@@ -21,4 +21,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    const profileImage = localStorage.getItem("avatar");
+    if (profileImage) {
+        const profileImageElement = document.getElementById("profile-image");
+        if (profileImageElement) {
+            profileImageElement.src = profileImage;
+        }
+    }
+
 });
