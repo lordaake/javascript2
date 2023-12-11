@@ -9,5 +9,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-});
+    const logoutLink = document.getElementById("log-out");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", function (event) {
+            event.preventDefault();
 
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("username");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("avatar");
+            localStorage.removeItem("banner");
+
+            window.location.href = "../index.html";
+        });
+    }
+
+});

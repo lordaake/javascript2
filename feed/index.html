@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../dist/css/index.css">
     <script src="../dist/js/bundle.js"></script>
     <script src="../src/js/loggedIn.js"></script>
-    <script src="../src/js/feed.js"></script>
+    <script src="../src/js/feed.js" type="module"></script>
 </head>
 
 <body class="bg-secondary">
@@ -25,10 +25,10 @@
                         <a class="nav-link text-light" href="../index.html" id="log-out">Log out</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="../feed/index.html">Feed</a>
+                        <a class="nav-link text-light" href="../feed">Feed</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="../profile/index.html">Profile</a>
+                        <a class="nav-link text-light" href="../profile">Profile</a>
                     </li>
                 </ul>
             </div>
@@ -74,14 +74,17 @@
                     <div class="sort-options mt-3 col-10 col-md-5 mx-auto">
                         <label for="sort-by" class="text-center">Sort by:</label>
                         <select id="sort-by" class="form-control form-control-sm">
-                            <option value="latest">Latest</option>
-                            <option value="popular">Popular</option>
+                            <option value="newest">Newest to Oldest</option>
+                            <option value="oldest">Oldest to Newest</option>
+                            <option value="no-image">No Image</option>
+                            <option value="with-image">With Image</option>
                         </select>
                     </div>
 
                     <div class="search-bar mt-2 col-10 col-md-5 mx-auto">
-                        <input type="text" class="form-control form-control-sm" placeholder="Search...">
-                        <button type="button" class="btn btn-primary btn-sm mt-2">Search</button>
+                        <input type="text" id="search-input" class="form-control form-control-sm"
+                            placeholder="Search...">
+                        <button type="button" id="search-button" class="btn btn-primary btn-sm mt-2">Search</button>
                     </div>
 
                     <div class="post-thumbnails mt-4 col-12 col-md-8 mx-auto">
@@ -95,6 +98,9 @@
                                 </div>
                             </div>
                         </div> This is a placeholder -->
+                    </div>
+                    <div class="d-flex justify-content-center my-3">
+                        <button id="load-more-button" class="btn btn-primary">Load More</button>
                     </div>
                 </div>
             </div>
