@@ -127,9 +127,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    function fetchAndDisplayPosts(searchTerm = '', loadMore = false) {
-        const postContainer = document.querySelector(".post-thumbnails");
+    const postContainer = document.querySelector(".post-thumbnails");
 
+    function fetchAndDisplayPosts(searchTerm = '', loadMore = false) {
         if (!loadMore) {
             postContainer.innerHTML = '';
             offset = 0;
@@ -153,57 +153,49 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-
         API_URL += `&offset=${offset}&limit=${limit}`;
 
-
-        fetch(API_URL, {
-            headers: {
-                "Authorization": `Bearer ${accessToken}`,
-            }
-        })
-            .then(response => response.json())
-            .then(posts => {
-
-
-                const sortBy = getSelectedSortOption();
-                let processedPosts = sortPosts(posts, sortBy);
-
-                processedPosts.forEach(post => {
-                    let commentsHTML = post.comments.map(comment => `
+        function addContentToFeed(post) {
+            let commentsHTML = post.comments.map(comment => `
                         <div class="comment">
                             <p><strong>${comment.author.name}:</strong> ${comment.body}</p>
                         </div>
                     `).join('');
 
-                    const tagsHTML = post.tags
-                        .map(tag => {
-                            const formattedTag = tag.startsWith('#') ? tag : `#${tag}`;
-                            return `<span class="post-tag">${formattedTag}</span>`;
-                        })
-                        .join(' ');
+            const tagsHTML = post.tags
+                .map(tag => {
+                    const formattedTag = tag.startsWith('#') ? tag : `#${tag}`;
+                    return `<span class="post-tag">${formattedTag}</span>`;
+                })
+                .join(' ');
 
-                    const postElement = document.createElement("div");
-                    postElement.classList.add("row");
-                    postElement.id = `post-${post.id}`;
+            const postElement = document.createElement("div");
+            postElement.classList.add("row");
+            postElement.id = `post-${post.id}`;
 
-                    const postThumbnail = document.createElement("div");
-                    postThumbnail.classList.add("col-12", "mb-4", "post-thumbnail", "bg-primary", "text-light", "p-3", "text-center", "mx-auto", "d-flex", "flex-column");
+            const postThumbnail = document.createElement("div");
+            postThumbnail.classList.add("col-12", "mb-4", "post-thumbnail", "bg-primary", "text-light", "p-3", "text-center", "mx-auto", "d-flex", "flex-column");
 
-                    const deleteButton = document.createElement("button");
-                    deleteButton.classList.add("btn", "btn-danger", "delete-post-button");
-                    deleteButton.setAttribute("data-post-id", post.id);
-                    deleteButton.textContent = "Delete Post";
-                    deleteButton.addEventListener("click", () => {
-                        deletePost(post.id, post.author ? post.author.name : null);
-                    });
+            const deleteButtonDiv = document.createElement("div");
+            deleteButtonDiv.classList.add("col-12")
 
-                    const viewPostButton = document.createElement("a");
-                    viewPostButton.href = `./../singlepost.html?postId=${post.id}`;
-                    viewPostButton.textContent = "View Post";
-                    viewPostButton.classList.add("btn", "btn-primary");
+            const deleteButton = document.createElement("button");
+            deleteButton.classList.add("btn", "btn-danger", "delete-post-button");
+            deleteButton.setAttribute("data-post-id", post.id);
+            deleteButton.textContent = "Delete Post";
+            deleteButton.addEventListener("click", () => {
+                deletePost(post.id, post.author ? post.author.name : null);
+            });
 
-                    postThumbnail.innerHTML = `
+            const viewPostBtnDiv = document.createElement("div");
+            viewPostBtnDiv.classList.add("col-12")
+
+            const viewPostButton = document.createElement("a");
+            viewPostButton.href = `./../singlepost.html?postId=${post.id}`;
+            viewPostButton.textContent = "View Post";
+            viewPostButton.classList.add("btn", "mb-2", "mt-2", "text-white", "font-weight-bold", "bg-black");
+
+            postThumbnail.innerHTML = `
                         <p class="text-light">${new Date(post.created).toLocaleString()}</p>
                         <p class="text-light">By ${post.author ? post.author.name : `${username}`}</p>
                         ${post.media ? `<img src="${post.media}" class="img-fluid img-thumbnail" alt="${post.title}">` : ''}
@@ -220,12 +212,35 @@ document.addEventListener("DOMContentLoaded", function () {
                                 ${commentsHTML}
                             </div>
                         </div>
-                    `;
+                        <div class="col-12">
+                            <button class="btn btn-light edit-post-button mt-2" data-post-id="${post.id}">Edit Post</button>
+                        </div>                        
+                                    `;
 
-                    postThumbnail.appendChild(deleteButton);
-                    postElement.appendChild(postThumbnail);
-                    postContainer.appendChild(postElement);
-                    postThumbnail.appendChild(viewPostButton);
+            postElement.appendChild(postThumbnail);
+            postContainer.appendChild(postElement);
+            postThumbnail.appendChild(viewPostBtnDiv);
+
+            viewPostBtnDiv.appendChild(viewPostButton);
+            postThumbnail.appendChild(deleteButtonDiv);
+            deleteButtonDiv.appendChild(deleteButton);
+        }
+
+
+        fetch(API_URL, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+            }
+        })
+            .then(response => response.json())
+            .then(posts => {
+
+
+                const sortBy = getSelectedSortOption();
+                let processedPosts = sortPosts(posts, sortBy);
+
+                processedPosts.forEach(post => {
+                    addContentToFeed(post);
                 });
             })
             .catch(error => console.error('Error fetching posts:', error));
@@ -264,6 +279,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const postThumbnail = document.createElement("div");
                 postThumbnail.classList.add("col-12", "mb-4", "post-thumbnail", "bg-primary", "text-light", "p-3", "text-center", "mx-auto", "d-flex", "flex-column");
 
+                const deleteButtonDiv = document.createElement("div");
+                deleteButtonDiv.classList.add("col-12")
+
                 const deleteButton = document.createElement("button");
                 deleteButton.classList.add("btn", "btn-danger", "delete-post-button");
                 deleteButton.setAttribute("data-post-id", post.id);
@@ -272,10 +290,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     deletePost(post.id, post.author ? post.author.name : null);
                 });
 
+                const viewPostBtnDiv = document.createElement("div");
+                viewPostBtnDiv.classList.add("col-12")
+
                 const viewPostButton = document.createElement("a");
                 viewPostButton.href = `./../singlepost.html?postId=${post.id}`;
                 viewPostButton.textContent = "View Post";
-                viewPostButton.classList.add("btn", "btn-primary");
+                viewPostButton.classList.add("btn", "mb-2", "mt-2", "text-white", "font-weight-bold", "bg-black");
 
                 postThumbnail.innerHTML = `
                 <p class="text-light">${new Date(post.created).toLocaleString()}</p>
@@ -294,12 +315,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         ${commentsHTML}
                     </div>
                 </div>
-            `;
+                <div class="col-12">
+                    <button class="btn btn-light edit-post-button mt-2" data-post-id="${post.id}">Edit Post</button>
+                </div>                        
+                            `;
 
-                postThumbnail.appendChild(deleteButton);
                 postElement.appendChild(postThumbnail);
                 postContainer.appendChild(postElement);
-                postThumbnail.appendChild(viewPostButton);
+                postThumbnail.appendChild(viewPostBtnDiv);
+
+                viewPostBtnDiv.appendChild(viewPostButton);
+                postThumbnail.appendChild(deleteButtonDiv);
+                deleteButtonDiv.appendChild(deleteButton);
             })
             .catch(error => console.error('Error fetching single post:', error));
     }
@@ -396,5 +423,85 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         fetchAndDisplayPosts();
     }
+
+    const editPostModal = document.getElementById("edit-post-modal");
+    const editPostModalCloseBtn = editPostModal.querySelector(".close");
+
+    editPostModalCloseBtn.addEventListener("click", function () {
+        editPostModal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (e) {
+        if (e.target === editPostModal) {
+            editPostModal.style.display = "none";
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("edit-post-button")) {
+            e.preventDefault();
+            const postId = e.target.getAttribute("data-post-id");
+            openEditPostModal(postId);
+        }
+    });
+
+    const editPostId = document.getElementById("edit-post-id")
+    const editPostTitle = document.getElementById("edit-post-title")
+    const editPostDescription = document.getElementById("edit-post-description")
+    const editPostImage = document.getElementById("edit-post-image")
+    const editPostTags = document.getElementById("edit-post-tags")
+
+    function openEditPostModal(postId) {
+        fetch(`https://api.noroff.dev/api/v1/social/posts/${postId}`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+            }
+        })
+            .then(response => response.json())
+            .then(post => {
+                editPostId.value = post.id;
+                editPostTitle.value = post.title;
+                editPostDescription.value = post.body;
+                editPostImage.value = post.media || "";
+                editPostTags.value = post.tags.join(", ");
+
+                editPostModal.style.display = "block";
+            })
+            .catch(error => console.error('Error fetching post data:', error));
+    }
+
+    const editPostForm = document.getElementById("edit-post-form");
+    editPostForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const postId = document.getElementById("edit-post-id").value;
+        const editedPostData = {
+            title: editPostTitle.value,
+            body: editPostDescription.value,
+            media: editPostImage.value,
+            tags: editPostTags.value.split(",").map(tag => tag.trim()),
+        };
+
+        fetch(`https://api.noroff.dev/api/v1/social/posts/${postId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(editedPostData),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(() => {
+                editPostModal.style.display = "none";
+                fetchAndDisplayPosts();
+            })
+            .catch(error => console.error('Error updating post:', error));
+    });
+
 
 });

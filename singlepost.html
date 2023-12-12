@@ -37,6 +37,35 @@
 
     <main>
         <section class="container">
+            <div id="edit-post-modal" class="modal custom-modal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-primary text-white p-4">
+                        <span class="close btn btn-danger btn-lg">&times;</span>
+                        <h2 class="mb-4">Edit Post</h2>
+                        <form id="edit-post-form">
+                            <input type="hidden" id="edit-post-id">
+                            <div class="mb-3">
+                                <label for="edit-post-title">Title</label>
+                                <input type="text" id="edit-post-title" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-post-description">Description</label>
+                                <textarea id="edit-post-description" class="form-control" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-post-image">Image URL</label>
+                                <input type="text" id="edit-post-image" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-post-tags">Tags (comma-separated)</label>
+                                <input type="text" id="edit-post-tags" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-light mt-3">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <div class="post-thumbnails mt-4 col-12 col-md-8 mx-auto">
             </div>
         </section>

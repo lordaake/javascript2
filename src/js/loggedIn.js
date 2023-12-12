@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const pagesThatRequireAuth = ["/feed/index.html", "/profile/index.html"];
+    const pagesThatRequireAuth = ["/feed/", "/profile/"];
     const currentPath = window.location.pathname;
 
     if (pagesThatRequireAuth.includes(currentPath) && !localStorage.getItem("isLoggedIn")) {

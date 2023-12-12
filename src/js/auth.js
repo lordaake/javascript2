@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 localStorage.setItem("avatar", data.avatar);
                 localStorage.setItem("banner", data.banner);
                 localStorage.setItem("isLoggedIn", "true");
-                window.location.href = "./profile/index.html";
+                window.location.href = "./profile/";
             })
             .catch((error) => {
                 console.error("Login error:", error);
