@@ -6,6 +6,7 @@ import { getLoggedInUser } from "./loggedIn.js";
 import { fetchAndDisplaySinglePost } from './postHandler.js';
 import { addContentToFeed } from './postHandler.js';
 import { showSuccessModal, showErrorModal, closeModal, initializeModal } from './modal.js';
+import { API_BASE_URL } from "./constants.js";
 
 /**
  * Get the logged-in user's information. If the user is not logged in, redirect to the login page. 
@@ -20,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get references to DOM elements
     const newPostForm = document.getElementById("new-post-form");
     const accessToken = localStorage.getItem("accessToken");
-    const API_POST_URL = "https://api.noroff.dev/api/v1/social/posts?_author=true&_comments=true";
+    const API_POST_URL = `${API_BASE_URL}posts?_author=true&_comments=true`;
 
     const title = document.getElementById("post-title");
     const body = document.getElementById("post-description");
@@ -126,7 +127,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getSelectedSortOption() {
         const sortBySelect = document.getElementById('sort-by');
-        return sortBySelect.value;
+        if (sortBySelect) {
+            return sortBySelect.value;
+        }
+        return '';
     }
 
     const profilePage = window.location.pathname.endsWith("profile/");
@@ -171,9 +175,9 @@ document.addEventListener("DOMContentLoaded", function () {
         let API_URL;
 
         if (profilePage && username) {
-            API_URL = `https://api.noroff.dev/api/v1/social/profiles/${username}/posts?_author=true&_comments=true`;
+            API_URL = `${API_BASE_URL}profiles/${username}/posts?_author=true&_comments=true`;
         } else if (feedPage) {
-            API_URL = `https://api.noroff.dev/api/v1/social/posts?_author=true&_comments=true`;
+            API_URL = `${API_BASE_URL}posts?_author=true&_comments=true`;
             if (searchTerm && searchTerm.length > 0) {
                 API_URL += `&_tag=${encodeURIComponent(searchTerm)}`;
             }
@@ -181,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('postId');
             if (postId) {
-                API_URL = `https://api.noroff.dev/api/v1/social/posts/${postId}?_author=true&_comments=true`;
+                API_URL = `${API_BASE_URL}posts/${postId}?_author=true&_comments=true`;
             }
         }
 
@@ -197,13 +201,15 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(posts => {
 
                 const sortBy = getSelectedSortOption();
-                let processedPosts = sortPosts(posts, sortBy);
+                let processedPosts = Array.isArray(posts) ? posts : [];
 
                 processedPosts.forEach(post => {
                     addContentToFeed(post);
                 });
             })
-            .catch(error => showErrorModal('Error fetching posts:' + error.message));
+            .catch(error => {
+                showErrorModal('Error fetching posts:' + error.message);
+            });
     }
 
     function submitComment(postId) {
@@ -219,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
             body: commentText,
         };
 
-        fetch(`https://api.noroff.dev/api/v1/social/posts/${postId}/comment`, {
+        fetch(`${API_BASE_URL}posts/${postId}/comment`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -293,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (postId) {
                 fetchAndDisplaySinglePost(postId);
             }
-        } else {
+        } else if (!singlePostPage) {
             fetchAndDisplayPosts();
         }
     }
@@ -336,7 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to open the edit post modal and populate it with post data.
     function openEditPostModal(postId) {
-        fetch(`https://api.noroff.dev/api/v1/social/posts/${postId}`, {
+        fetch(`${API_BASE_URL}posts/${postId}`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
             }
@@ -367,7 +373,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         // Send a PUT request to update the post data on the server.
-        fetch(`https://api.noroff.dev/api/v1/social/posts/${postId}`, {
+        fetch(`${API_BASE_URL}posts/${postId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
