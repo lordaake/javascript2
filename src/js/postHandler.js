@@ -1,4 +1,26 @@
 /**
+* Sort posts based on the selected sorting option.
+*
+* @param {Array} posts - The array of posts to be sorted.
+* @param {string} sortBy - The sorting option.
+* @returns {Array} - The sorted array of posts.
+*/
+function sortPosts(posts, sortBy) {
+    switch (sortBy) {
+        case 'newest':
+            return posts.sort((a, b) => new Date(b.created) - new Date(a.created));
+        case 'oldest':
+            return posts.sort((a, b) => new Date(a.created) - new Date(b.created));
+        case 'no-image':
+            return posts.filter(post => !post.media);
+        case 'with-image':
+            return posts.filter(post => post.media);
+        default:
+            return posts;
+    }
+};
+
+/**
  * Adds content to the feed, including post details, comments, and buttons.
  *
  * @param {Object} post - The post object containing post data.
@@ -138,57 +160,6 @@ function deletePost(postId) {
         .catch(error => showErrorModal('Error deleting post:' + error.message));
 }
 
-/**
- * Fetches and displays posts based on search term and load more option.
- *
- * @param {string} searchTerm - The search term used to filter posts.
- * @param {boolean} loadMore - Indicates if more posts should be loaded.
- */
-function fetchAndDisplayPosts(searchTerm = '', loadMore = false) {
-    if (!loadMore) {
-        postContainer.innerHTML = '';
-        offset = 0;
-    }
-
-    let API_URL;
-
-    if (profilePage && username) {
-        API_URL = `https://api.noroff.dev/api/v1/social/profiles/${username}/posts?_author=true&_comments=true`;
-    } else if (feedPage) {
-        API_URL = `https://api.noroff.dev/api/v1/social/posts?_author=true&_comments=true`;
-        if (searchTerm && searchTerm.length > 0) {
-            API_URL += `&_tag=${encodeURIComponent(searchTerm)}`;
-        }
-    } else if (singlePostPage) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('postId');
-        if (postId) {
-            API_URL = `https://api.noroff.dev/api/v1/social/posts/${postId}?_author=true&_comments=true`;
-        }
-    }
-
-    API_URL += `&offset=${offset}&limit=${limit}`;
-
-
-    fetch(API_URL, {
-        headers: {
-            "Authorization": `Bearer ${accessToken}`,
-        }
-    })
-        .then(response => response.json())
-        .then(posts => {
-
-            const sortBy = getSelectedSortOption();
-            let processedPosts = sortPosts(posts, sortBy);
-
-            processedPosts.forEach(post => {
-                addContentToFeed(post);
-            });
-        })
-        .catch(error => showErrorModal('Error fetching posts:' + error.message));
-}
-
 export { fetchAndDisplaySinglePost };
 export { addContentToFeed };
 export { deletePost };
-export { fetchAndDisplayPosts };

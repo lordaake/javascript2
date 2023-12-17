@@ -201,13 +201,14 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(posts => {
 
                 const sortBy = getSelectedSortOption();
-                let processedPosts = Array.isArray(posts) ? posts : [];
+                let processedPosts = sortPosts(posts, sortBy);
 
                 processedPosts.forEach(post => {
                     addContentToFeed(post);
                 });
             })
             .catch(error => {
+                console.error('Error fetching posts:', error);
                 showErrorModal('Error fetching posts:' + error.message);
             });
     }
@@ -299,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (postId) {
                 fetchAndDisplaySinglePost(postId);
             }
-        } else if (!singlePostPage) {
+        } else {
             fetchAndDisplayPosts();
         }
     }
@@ -325,13 +326,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Add a click event listener to open the edit post modal when an "edit post" button is clicked.
     document.addEventListener("click", function (e) {
-        const editPostButton = document.querySelector(".edit-post-button");
-        if (editPostButton && e.target === editPostButton) {
+        if (e.target.classList.contains("edit-post-button")) {
             e.preventDefault();
             const postId = e.target.getAttribute("data-post-id");
             openEditPostModal(postId);
         }
     });
+
 
     // Get references to elements within the edit post modal.
     const editPostId = document.getElementById("edit-post-id")
@@ -389,7 +390,9 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(() => {
                 editPostModal.style.display = "none";
-                fetchAndDisplayPosts();
+                if (profilePage || feedPage) {
+                    fetchAndDisplayPosts();
+                }
                 if (singlePostPage) {
                     fetchAndDisplaySinglePost(postId);
                 }
